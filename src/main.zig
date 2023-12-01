@@ -14,13 +14,29 @@ test "Day 1: Trebuchet?!" {
 
     const allocator = std.testing.allocator;
 
-    const example_slice = try trebuchet(allocator, input_example);
+    const example_slice = try trebuchet_1(allocator, input_example);
     defer allocator.free(example_slice);
 
     try std.testing.expectEqualSlices(u32, &.{ 12, 38, 15, 77 }, example_slice);
+
+    const in_file = try std.fs.cwd().openFile("./input/day01_input", .{});
+    defer in_file.close();
+
+    const file_content = try in_file.readToEndAlloc(allocator, std.math.maxInt(u64));
+    defer allocator.free(file_content);
+
+    const solution_slice = try trebuchet_1(allocator, file_content);
+    defer allocator.free(solution_slice);
+
+    var sum: usize = 0;
+    for (solution_slice) |i| {
+        sum += i;
+    }
+
+    std.debug.print("\nPart 1 Answer: {d}\n", .{sum});
 }
 
-pub fn trebuchet(allocator: std.mem.Allocator, src: []const u8) ![]const u32 {
+pub fn trebuchet_1(allocator: std.mem.Allocator, src: []const u8) ![]const u32 {
     var iter = std.mem.tokenizeAny(u8, src, &std.ascii.whitespace);
 
     var char_buffer = std.ArrayList(u8).init(allocator);
