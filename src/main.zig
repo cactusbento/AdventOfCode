@@ -12,6 +12,7 @@ pub fn main() !void {
 
     try day01fn(allocator, input_dir);
 }
+
 pub fn day01fn(allocator: std.mem.Allocator, in_dir: std.fs.Dir) !void {
     const in_file = try in_dir.openFile("./day01_input", .{});
     defer in_file.close();
